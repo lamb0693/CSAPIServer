@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    TestAPI
+    <script>
+
+        const getList = async() => {
+            try {
+                const result = await axios.post("http://localhost:8080/member/register", {
+                    tel : '01057011307',
+                    name : '너너너',
+                    password: "00000000"
+                })
+                console.log(result.data)
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        getList()
+
+
+    </script>
+</body>
+</html>
