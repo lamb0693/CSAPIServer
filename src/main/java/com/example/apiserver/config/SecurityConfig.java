@@ -1,11 +1,15 @@
 package com.example.apiserver.config;
 
 
+import com.example.apiserver.filter.LoginFilter;
+import com.example.apiserver.service.MemberUserDetailsService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -27,15 +31,9 @@ import java.util.Arrays;
 @AllArgsConstructor
 @Log4j2
 public class SecurityConfig {
+    MemberUserDetailsService memberUserDetailsService;
+
     private static final String[] PERMIT_URL_ARRAY = {
-            /* swagger v2 */
-            "/v2/api-docs",
-            "/swagger-resources",
-            "/swagger-resources/**",
-            "/configuration/ui",
-            "/configuration/security",
-            "/swagger-ui.html",
-            "/webjars/**",
             /* swagger v3 */
             "/v3/api-docs/**",
             "/swagger-ui/**"
@@ -43,6 +41,23 @@ public class SecurityConfig {
     @Bean
 
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        //Custom Login Filter 설정
+        AuthenticationManagerBuilder authenticationManagerBuilder =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
+
+        authenticationManagerBuilder.userDetailsService(memberUserDetailsService);
+
+        AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
+
+        http.authenticationManager(authenticationManager);
+
+        LoginFilter loginFilter = new LoginFilter("/auth/login");
+        loginFilter.setAuthenticationManager(authenticationManager);
+
+        http.addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class);
+        // Custom Login Filter 설정 끝
+
 //        http.authorizeHttpRequests( (request) -> {
 //            request.requestMatchers("/").permitAll()
 //                    .requestMatchers("swagger-ui/**", "/v3/api-docs/**").permitAll()
