@@ -1,6 +1,7 @@
 package com.example.apiserver.service;
 
 import com.example.apiserver.constant.Role;
+import com.example.apiserver.dto.MemberListDTO;
 import com.example.apiserver.dto.MemberRegisterDTO;
 import com.example.apiserver.entity.MemberEntity;
 import com.example.apiserver.repository.MemberRepository;
@@ -10,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -35,4 +38,24 @@ public class MemberService {
         return saveResultDTO;
     }
 
+    public MemberListDTO getMember(String tel) throws Exception{
+        MemberListDTO memberListDTO = new MemberListDTO();
+
+        Optional<MemberEntity> optionalMember= memberRepository.findByTel(tel);
+        MemberEntity memberEntity = optionalMember.orElseThrow(() -> { return new RuntimeException("member not found by tel Excepton"); } );
+
+        memberListDTO.setName(memberEntity.getName());
+        memberListDTO.setTel(memberEntity.getTel());
+        memberListDTO.setRole(memberEntity.getRole().toString());
+        memberListDTO.setJoin_date(memberEntity.getJoin_date());
+
+        return memberListDTO;
+    }
+
+    public void deleteMember(String tel) throws Exception{
+        Optional<MemberEntity> optionalMember= memberRepository.findByTel(tel);
+        MemberEntity memberEntity = optionalMember.orElseThrow(() -> { return new RuntimeException("member not found by tel Excepton"); } );
+
+        memberRepository.delete(memberEntity);
+    }
 }

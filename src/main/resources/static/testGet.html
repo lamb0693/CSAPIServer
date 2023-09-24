@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+TestAPI
+<script>
+    const getMember = async() => {
+        try {
+            const result = await axios.get("/api/member/01057011307")
+
+            console.log(result.data)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+    getMember()
+
+
+</script>
+</body>
+</html>

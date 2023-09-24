@@ -1,8 +1,11 @@
 package com.example.apiserver.config;
 
 
+import com.example.apiserver.filter.JwtTokenCheckFilter;
 import com.example.apiserver.filter.LoginFilter;
+import com.example.apiserver.handler.CustomLoginSuccessHandler;
 import com.example.apiserver.service.MemberUserDetailsService;
+import com.example.apiserver.util.JwtUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
@@ -32,17 +35,12 @@ import java.util.Arrays;
 @Log4j2
 public class SecurityConfig {
     MemberUserDetailsService memberUserDetailsService;
+    JwtUtil jwtUtil;
 
-    private static final String[] PERMIT_URL_ARRAY = {
-            /* swagger v3 */
-            "/v3/api-docs/**",
-            "/swagger-ui/**"
-    };
     @Bean
-
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        //Custom Login Filter 설정
+        //*****Custom Login Filter 설정
         AuthenticationManagerBuilder authenticationManagerBuilder =
                 http.getSharedObject(AuthenticationManagerBuilder.class);
 
@@ -54,21 +52,28 @@ public class SecurityConfig {
 
         LoginFilter loginFilter = new LoginFilter("/auth/login");
         loginFilter.setAuthenticationManager(authenticationManager);
+        loginFilter.setAuthenticationSuccessHandler(customLoginSuccessHandler());
 
         http.addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class);
-        // Custom Login Filter 설정 끝
+        //***** Custom Login Filter 설정 끝
 
-//        http.authorizeHttpRequests( (request) -> {
-//            request.requestMatchers("/").permitAll()
-//                    .requestMatchers("swagger-ui/**", "/v3/api-docs/**").permitAll()
-//                    .requestMatchers("/js/**", "/image/**", "/css/**").permitAll()
-//                    .anyRequest().authenticated();
-//        });
+        // JwtTokenCheck filter 설정
+        JwtTokenCheckFilter jwtTokenCheckFilter = new JwtTokenCheckFilter(jwtUtil, memberUserDetailsService);
+        http.addFilterBefore(jwtTokenCheckFilter, UsernamePasswordAuthenticationFilter.class);
+        // JwtTokenCheck filter 설정 끝
+
+        http.authorizeHttpRequests( (request) -> {
+            request.requestMatchers("/", "/register").permitAll()
+                    .requestMatchers("/js/**", "/image/**", "/css/**").permitAll()
+                    .requestMatchers("/member/register").permitAll()
+                    .requestMatchers("/api/member/**").hasAuthority("ROLE_CSR")
+                    .anyRequest().authenticated();
+        });
         http.sessionManagement( (session) -> {
             session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)   ;
         });
         http.csrf(AbstractHttpConfigurer::disable);
-
+//
 //        http.cors(httpSecurityCorsConfigurer -> {
 //            httpSecurityCorsConfigurer.configurationSource((corsConfigurationSource()));
 //        });
@@ -93,5 +98,10 @@ public class SecurityConfig {
     @Bean
     PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    CustomLoginSuccessHandler customLoginSuccessHandler(){
+        return new CustomLoginSuccessHandler(jwtUtil);
     }
 }
