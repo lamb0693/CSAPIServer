@@ -40,7 +40,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        //*****Custom Login Filter 설정
+        //*****AuthManager build 및 설정
+        // Login Filter를 위해서 만든 듯
+        // 원래는 http.setUserDetail만 있으면 될 듯 한데
+        // 이렇게 하면 모든 과정에 이 Authentication Manager가 불릴 듯함
         AuthenticationManagerBuilder authenticationManagerBuilder =
                 http.getSharedObject(AuthenticationManagerBuilder.class);
 
@@ -50,6 +53,7 @@ public class SecurityConfig {
 
         http.authenticationManager(authenticationManager);
 
+        // Login filter 설정
         LoginFilter loginFilter = new LoginFilter("/auth/login");
         loginFilter.setAuthenticationManager(authenticationManager);
         loginFilter.setAuthenticationSuccessHandler(customLoginSuccessHandler());
