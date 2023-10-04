@@ -45,9 +45,15 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
         log.info(jsonData);
 
         // 기본 AuthenticationManager를 SecurityConfig에서 설정 -> MemberUserDetaiols를 이용한 authentication이 일어남
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
-                = new UsernamePasswordAuthenticationToken(
-                        jsonData.get("tel"), jsonData.get("password"));
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken;
+        if(jsonData == null){
+            usernamePasswordAuthenticationToken =new UsernamePasswordAuthenticationToken(
+                    null, null);
+        } else {
+            usernamePasswordAuthenticationToken
+                    = new UsernamePasswordAuthenticationToken(
+                    jsonData.get("tel"), jsonData.get("password"));
+        }
 
         Authentication authentication =  getAuthenticationManager().authenticate(usernamePasswordAuthenticationToken);
         log.info("attemptAuthentication@AbstractAuthenticationProcessingFilter : authentication {}", authentication);
