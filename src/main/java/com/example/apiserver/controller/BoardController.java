@@ -1,7 +1,7 @@
 package com.example.apiserver.controller;
 
 import com.example.apiserver.dto.BoardCreateDTO;
-import com.example.apiserver.dto.MemberRegisterDTO;
+import com.example.apiserver.dto.BoardListDTO;
 import com.example.apiserver.entity.BoardEntity;
 import com.example.apiserver.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -31,5 +31,21 @@ public class BoardController {
             log.error("Error in save member {}", e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @PostMapping("/list")
+    @ResponseBody
+    public ResponseEntity<BoardListDTO> list(@RequestParam int noOfDisplay, @RequestParam String tel){
+        log.info("##### list@BoardController boardCreateDTO");
+        BoardListDTO boardListDTO = new BoardListDTO();
+
+        try{
+            boardListDTO = boardService.list(noOfDisplay, tel);
+            return ResponseEntity.ok().body(boardListDTO);
+        }catch(Exception e){
+            log.error("##### list@BoardController >> error in get list : {}", e.getMessage());
+            return ResponseEntity.badRequest().body(null);
+        }
+
     }
 }

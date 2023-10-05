@@ -2,6 +2,7 @@ package com.example.apiserver.service;
 
 import com.example.apiserver.constant.Content;
 import com.example.apiserver.dto.BoardCreateDTO;
+import com.example.apiserver.dto.BoardListDTO;
 import com.example.apiserver.entity.BoardEntity;
 import com.example.apiserver.entity.MemberEntity;
 import com.example.apiserver.repository.BoardRepository;
@@ -10,11 +11,14 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -55,5 +59,17 @@ public class BoardService {
         BoardEntity savedEntity = boardRepository.save(boardEntity);
         return savedEntity;
 
+    }
+
+    public BoardListDTO list(int noOfDisplay, String tel) {
+        BoardListDTO boardListDTO = new BoardListDTO();
+
+        Pageable pageable = PageRequest.of(0, noOfDisplay);
+        List<BoardEntity> boardEntityList = boardRepository.list(tel, pageable);
+        /*
+        Under construction
+
+        */
+        return boardListDTO;
     }
 }
