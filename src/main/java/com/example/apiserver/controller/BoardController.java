@@ -22,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class BoardController {
     private final BoardService boardService;
 
-    @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/create", produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
     public ResponseEntity<String> create(@RequestParam String content, @RequestParam String message, @RequestParam MultipartFile file, @AuthenticationPrincipal MemberAuthDTO memberAuthDTO){
         log.info("##### create@BoardController memberAuthDTO {}", memberAuthDTO);
@@ -41,7 +41,8 @@ public class BoardController {
             boardCreateDTO.setTel(memberAuthDTO.getTel());
             BoardEntity boardEntity = boardService.create(boardCreateDTO);
             boardEntity.setUploader(null);
-            return ResponseEntity.ok().body(boardEntity.toString());
+            return ResponseEntity.ok().body(boardEntity.toString());  //  무슨 일인지 retrofit에서  error 발생
+            //return ResponseEntity.ok().body("Hello World");
         }catch(Exception e){
             log.error("Error in save member {}", e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
