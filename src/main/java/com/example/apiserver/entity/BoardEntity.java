@@ -25,7 +25,7 @@ public class BoardEntity {
     @Column(length = 100)
     private String message;
 
-    @Column(length = 60)
+    @Column(length = 100)
     String filePath;
 
     @Column(length = 30)

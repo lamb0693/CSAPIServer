@@ -56,8 +56,7 @@ public class BoardService {
             }
         }
 
-        BoardEntity savedEntity = boardRepository.save(boardEntity);
-        return savedEntity;
+        return boardRepository.save(boardEntity);
 
     }
 
