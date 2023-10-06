@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -60,15 +61,21 @@ public class BoardService {
 
     }
 
-    public BoardListDTO list(int noOfDisplay, String tel) {
-        BoardListDTO boardListDTO = new BoardListDTO();
+    public List<BoardListDTO> list(int noOfDisplay, String tel) {
+        List<BoardListDTO> boardListDTOs = new ArrayList<>();
+        BoardListDTO boardListDTO = null;
 
         Pageable pageable = PageRequest.of(0, noOfDisplay);
         List<BoardEntity> boardEntityList = boardRepository.list(tel, pageable);
-        /*
-        Under construction
-
-        */
-        return boardListDTO;
+        for(BoardEntity boardEntity : boardEntityList){
+            boardListDTO = new BoardListDTO();
+            boardListDTO.setBoard_id(boardEntity.getBoard_id());
+            boardListDTO.setName(boardEntity.getUploader().getName());
+            boardListDTO.setContent(boardEntity.getContent());
+            boardListDTO.setMessage(boardEntity.getMessage());
+            boardListDTO.setUpdate_date(boardEntity.getUpdate_date());
+            boardListDTOs.add(boardListDTO);
+        }
+        return boardListDTOs;
     }
 }

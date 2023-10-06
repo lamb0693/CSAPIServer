@@ -16,6 +16,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 @RequestMapping("/api/board/")
 @Log4j2
@@ -42,8 +45,7 @@ public class BoardController {
             boardCreateDTO.setTel(memberAuthDTO.getTel());
             BoardEntity boardEntity = boardService.create(boardCreateDTO);
             boardEntity.setUploader(null);
-            return ResponseEntity.ok().body(boardEntity.toString());  //  무슨 일인지 retrofit에서  error 발생
-            //return ResponseEntity.ok().body("Hello World");
+            return ResponseEntity.ok().body(boardEntity.toString());
         }catch(Exception e){
             log.error("Error in save member {}", e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -52,13 +54,13 @@ public class BoardController {
 
     @PostMapping("/list")
     @ResponseBody
-    public ResponseEntity<BoardListDTO> list(@RequestParam int noOfDisplay, @RequestParam String tel){
+    public ResponseEntity<List<BoardListDTO>> list(@RequestParam int noOfDisplay, @RequestParam String tel){
         log.info("##### list@BoardController boardCreateDTO");
-        BoardListDTO boardListDTO = new BoardListDTO();
+        List<BoardListDTO> boardListDTOs;
 
         try{
-            boardListDTO = boardService.list(noOfDisplay, tel);
-            return ResponseEntity.ok().body(boardListDTO);
+            boardListDTOs = boardService.list(noOfDisplay, tel);
+            return ResponseEntity.ok().body(boardListDTOs);
         }catch(Exception e){
             log.error("##### list@BoardController >> error in get list : {}", e.getMessage());
             return ResponseEntity.badRequest().body(null);
