@@ -16,11 +16,11 @@ public class BoardListDTO {
 
     private String name;
 
-    private Content content;
+    private String content;
 
     private String message;
 
-    private LocalDateTime update_date = LocalDateTime.now();
+    private String strUpdatedAt;
 
     @Override
     public String toString() {
@@ -29,7 +29,7 @@ public class BoardListDTO {
                 ", name='" + name + '\'' +
                 ", content=" + content +
                 ", message='" + message + '\'' +
-                ", update_date=" + update_date +
+                ", update_date=" + strUpdatedAt +
                 '}';
     }
 }

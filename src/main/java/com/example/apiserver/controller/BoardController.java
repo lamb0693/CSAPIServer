@@ -28,11 +28,13 @@ public class BoardController {
 
     @PostMapping(value = "/create", produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
-    public ResponseEntity<String> create(@RequestParam String content, @RequestParam String message, @RequestParam MultipartFile file, @AuthenticationPrincipal MemberAuthDTO memberAuthDTO){
+    public ResponseEntity<String> create(@RequestParam String customerTel, @RequestParam String content, @RequestParam String message, @RequestParam(required = false) MultipartFile file, @AuthenticationPrincipal MemberAuthDTO memberAuthDTO){
         log.info("##### create@BoardController memberAuthDTO {}", memberAuthDTO);
+        String strCustomorTel = customerTel.replaceAll("\"", "");
         String strMessage = message.replaceAll("\"", "");
         String strContent = content.replaceAll("\"", "");
         BoardCreateDTO boardCreateDTO = new BoardCreateDTO();
+        boardCreateDTO.setCustomerTel(strCustomorTel);
         boardCreateDTO.setContent(strContent);
         boardCreateDTO.setMessage(strMessage);
         if(file!=null){
@@ -45,6 +47,7 @@ public class BoardController {
             boardCreateDTO.setTel(memberAuthDTO.getTel());
             BoardEntity boardEntity = boardService.create(boardCreateDTO);
             boardEntity.setUploader(null);
+            boardEntity.setCustomer(null);
             return ResponseEntity.ok().body(boardEntity.toString());
         }catch(Exception e){
             log.error("Error in save member {}", e.getMessage());
@@ -52,10 +55,10 @@ public class BoardController {
         }
     }
 
-    @PostMapping("/list")
+    @PostMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<List<BoardListDTO>> list(@RequestParam int noOfDisplay, @RequestParam String tel){
-        log.info("##### list@BoardController boardCreateDTO");
+        log.info("##### list@BoardController boardCreateDTO {},{}", noOfDisplay, tel);
         List<BoardListDTO> boardListDTOs;
 
         try{

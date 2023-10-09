@@ -33,13 +33,17 @@ public class BoardService {
     @Value( "${org.zerock.upload.path}" )
     private String uploadPath;
 
+    @Transactional
     public BoardEntity create(BoardCreateDTO boardCreateDTO){
+        MemberEntity customerEntity = new MemberEntity();
+        customerEntity = memberRepository.findByTel(boardCreateDTO.getCustomerTel()).orElseThrow(()->new RuntimeException("customer tel not found exception"));
         MemberEntity memberEntity = new MemberEntity();
         memberEntity = memberRepository.findByTel(boardCreateDTO.getTel()).orElseThrow(()->new RuntimeException("tel not found exception"));
         BoardEntity boardEntity = new BoardEntity();
         boardEntity.setContent(Content.valueOf( boardCreateDTO.getContent() ));
         boardEntity.setMessage(boardCreateDTO.getMessage());
         boardEntity.setUploader(memberEntity);
+        boardEntity.setCustomer(customerEntity);
         log.info("##### create@BoardService boardEntity {}", boardEntity);
 
         MultipartFile file = boardCreateDTO.getFile();
@@ -67,15 +71,17 @@ public class BoardService {
 
         Pageable pageable = PageRequest.of(0, noOfDisplay);
         List<BoardEntity> boardEntityList = boardRepository.list(tel, pageable);
+        log.info("#### list@BoardService boardEntityList : {}", boardEntityList);
         for(BoardEntity boardEntity : boardEntityList){
             boardListDTO = new BoardListDTO();
             boardListDTO.setBoard_id(boardEntity.getBoard_id());
             boardListDTO.setName(boardEntity.getUploader().getName());
-            boardListDTO.setContent(boardEntity.getContent());
+            boardListDTO.setContent(boardEntity.getContent().toString());
             boardListDTO.setMessage(boardEntity.getMessage());
-            boardListDTO.setUpdate_date(boardEntity.getUpdate_date());
+            boardListDTO.setStrUpdatedAt(boardEntity.getUpdate_date().toString());
             boardListDTOs.add(boardListDTO);
         }
+        log.info("#### list@BoardService boardListDTOS : {}", boardListDTOs);
         return boardListDTOs;
     }
 }

@@ -11,6 +11,6 @@ import java.util.List;
 
 @Repository
 public interface BoardRepository extends JpaRepository<BoardEntity, Long> {
-    @Query(value = "select b from BoardEntity as b where (b.uploader.tel = :tel ) order by b.board_id desc")
+    @Query(value = "select b from BoardEntity as b where (b.customer.tel = :tel ) order by b.board_id desc")
     List<BoardEntity> list(String tel, Pageable pageable);
 }

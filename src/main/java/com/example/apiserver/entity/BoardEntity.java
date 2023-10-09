@@ -16,6 +16,9 @@ public class BoardEntity {
     private Long board_id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    private MemberEntity customer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     private MemberEntity uploader;
 
     @Column(length=10, nullable = false)
