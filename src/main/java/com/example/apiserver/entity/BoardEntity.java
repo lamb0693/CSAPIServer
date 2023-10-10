@@ -21,6 +21,9 @@ public class BoardEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private MemberEntity uploader;
 
+    @Column(nullable = false)
+    private boolean bReplied = false;
+
     @Column(length=10, nullable = false)
     @Enumerated(EnumType.STRING)
     private Content content;

@@ -76,6 +76,7 @@ public class BoardService {
             boardListDTO = new BoardListDTO();
             boardListDTO.setBoard_id(boardEntity.getBoard_id());
             boardListDTO.setName(boardEntity.getUploader().getName());
+            boardListDTO.setBReplied(boardEntity.isBReplied());
             boardListDTO.setContent(boardEntity.getContent().toString());
             boardListDTO.setMessage(boardEntity.getMessage());
             boardListDTO.setStrUpdatedAt(boardEntity.getUpdate_date().toString());

@@ -18,6 +18,8 @@ public class BoardListDTO {
 
     private String content;
 
+    private boolean bReplied;
+
     private String message;
 
     private String strUpdatedAt;
@@ -27,9 +29,10 @@ public class BoardListDTO {
         return "BoardListDTO{" +
                 "board_id=" + board_id +
                 ", name='" + name + '\'' +
-                ", content=" + content +
+                ", content='" + content + '\'' +
+                ", bReplied=" + bReplied +
                 ", message='" + message + '\'' +
-                ", update_date=" + strUpdatedAt +
+                ", strUpdatedAt='" + strUpdatedAt + '\'' +
                 '}';
     }
 }
