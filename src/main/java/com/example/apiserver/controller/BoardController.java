@@ -58,7 +58,7 @@ public class BoardController {
     @PostMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<List<BoardListDTO>> list(@RequestParam int noOfDisplay, @RequestParam String tel){
-        log.info("##### list@BoardController boardCreateDTO {},{}", noOfDisplay, tel);
+        log.info("##### list@BoardController noOfDisplay tel {},{}", noOfDisplay, tel);
         List<BoardListDTO> boardListDTOs;
 
         try{
