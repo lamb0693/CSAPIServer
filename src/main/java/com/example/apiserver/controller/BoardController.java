@@ -68,6 +68,20 @@ public class BoardController {
             log.error("##### list@BoardController >> error in get list : {}", e.getMessage());
             return ResponseEntity.badRequest().body(null);
         }
+    }
 
+    @PostMapping(value = "/listUnReplied", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<List<BoardListDTO>> listUnreplied(@RequestParam int noOfDisplay){
+        log.info("##### listUuReplied@BoardController noOfDisplay tel {}", noOfDisplay);
+        List<BoardListDTO> boardListDTOs;
+
+        try{
+            boardListDTOs = boardService.listUnreplied(noOfDisplay);
+            return ResponseEntity.ok().body(boardListDTOs);
+        }catch(Exception e){
+            log.error("##### listUnreplied@BoardController >> error in get list : {}", e.getMessage());
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 }

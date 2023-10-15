@@ -67,7 +67,7 @@ public class SecurityConfig {
         // JwtTokenCheck filter 설정 끝
 
         http.authorizeHttpRequests( (request) -> {
-            request.requestMatchers("/", "/register").permitAll()
+            request.requestMatchers("/", "/register", "/getToken").permitAll()
                     .requestMatchers("/js/**", "/image/**", "/css/**").permitAll()
                     .requestMatchers("/member/register").permitAll()
                     .requestMatchers("/api/member/**").hasAuthority("ROLE_CSR")

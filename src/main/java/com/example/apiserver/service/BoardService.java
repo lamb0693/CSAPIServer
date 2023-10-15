@@ -85,4 +85,25 @@ public class BoardService {
         log.info("#### list@BoardService boardListDTOS : {}", boardListDTOs);
         return boardListDTOs;
     }
+
+    public List<BoardListDTO> listUnreplied(int noOfDisplay) {
+        List<BoardListDTO> boardListDTOs = new ArrayList<>();
+        BoardListDTO boardListDTO = null;
+
+        Pageable pageable = PageRequest.of(0, noOfDisplay);
+        List<BoardEntity> boardEntityList = boardRepository.findAllByBReplied(false, pageable);
+        log.info("#### list@BoardService boardEntityList : {}", boardEntityList);
+        for(BoardEntity boardEntity : boardEntityList){
+            boardListDTO = new BoardListDTO();
+            boardListDTO.setBoard_id(boardEntity.getBoard_id());
+            boardListDTO.setName(boardEntity.getUploader().getName());
+            boardListDTO.setBReplied(boardEntity.isBReplied());
+            boardListDTO.setContent(boardEntity.getContent().toString());
+            boardListDTO.setMessage(boardEntity.getMessage());
+            boardListDTO.setStrUpdatedAt(boardEntity.getUpdate_date().toString());
+            boardListDTOs.add(boardListDTO);
+        }
+        log.info("#### listUnreplied@BoardService boardListDTOS : {}", boardListDTOs);
+        return boardListDTOs;
+    }
 }

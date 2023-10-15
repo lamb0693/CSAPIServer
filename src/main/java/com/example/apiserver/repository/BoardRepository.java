@@ -13,4 +13,7 @@ import java.util.List;
 public interface BoardRepository extends JpaRepository<BoardEntity, Long> {
     @Query(value = "select b from BoardEntity as b where (b.customer.tel = :tel ) order by b.board_id desc")
     List<BoardEntity> list(String tel, Pageable pageable);
+
+    @Query(value = "select b from BoardEntity as b where (b.bReplied = false ) order by b.board_id desc")
+    List<BoardEntity> findAllByBReplied(boolean b, Pageable pageable);
 }
