@@ -3,6 +3,7 @@ package com.example.apiserver.service;
 import com.example.apiserver.constant.Content;
 import com.example.apiserver.dto.BoardCreateDTO;
 import com.example.apiserver.dto.BoardListDTO;
+import com.example.apiserver.dto.PagedBoardListDTO;
 import com.example.apiserver.entity.BoardEntity;
 import com.example.apiserver.entity.MemberEntity;
 import com.example.apiserver.repository.BoardRepository;
@@ -11,6 +12,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -86,12 +88,13 @@ public class BoardService {
         return boardListDTOs;
     }
 
-    public List<BoardListDTO> listUnreplied(int noOfDisplay) {
+    public PagedBoardListDTO listUnreplied(int page) {
+        PagedBoardListDTO pagedBoardListDTO = new PagedBoardListDTO();
         List<BoardListDTO> boardListDTOs = new ArrayList<>();
         BoardListDTO boardListDTO = null;
 
-        Pageable pageable = PageRequest.of(0, noOfDisplay);
-        List<BoardEntity> boardEntityList = boardRepository.findAllByBReplied(false, pageable);
+        Pageable pageable = PageRequest.of(page, 10);
+        Page<BoardEntity> boardEntityList = boardRepository.findAllByBReplied(false, pageable);
         log.info("#### list@BoardService boardEntityList : {}", boardEntityList);
         for(BoardEntity boardEntity : boardEntityList){
             boardListDTO = new BoardListDTO();
@@ -103,7 +106,11 @@ public class BoardService {
             boardListDTO.setStrUpdatedAt(boardEntity.getUpdate_date().toString());
             boardListDTOs.add(boardListDTO);
         }
+        pagedBoardListDTO.setMemberListDTOList(boardListDTOs);
+        pagedBoardListDTO.setCurrentPage(boardEntityList.getNumber());
+        pagedBoardListDTO.setPageSize(boardEntityList.getTotalPages());
+        pagedBoardListDTO.setTotalElements(boardEntityList.getTotalElements());
         log.info("#### listUnreplied@BoardService boardListDTOS : {}", boardListDTOs);
-        return boardListDTOs;
+        return pagedBoardListDTO;
     }
 }

@@ -1,9 +1,6 @@
 package com.example.apiserver.controller;
 
-import com.example.apiserver.dto.BoardCreateDTO;
-import com.example.apiserver.dto.BoardListDTO;
-import com.example.apiserver.dto.MemberAuthDTO;
-import com.example.apiserver.dto.MemberRegisterDTO;
+import com.example.apiserver.dto.*;
 import com.example.apiserver.entity.BoardEntity;
 import com.example.apiserver.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -70,15 +67,17 @@ public class BoardController {
         }
     }
 
-    @PostMapping(value = "/listUnReplied", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/listUnReplied/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<List<BoardListDTO>> listUnreplied(@RequestParam int noOfDisplay){
-        log.info("##### listUuReplied@BoardController noOfDisplay tel {}", noOfDisplay);
-        List<BoardListDTO> boardListDTOs;
+    public ResponseEntity<PagedBoardListDTO> listUnreplied(@PathVariable(value = "page", required = false) String page){
+        if(page == null) page= "0";
+        PagedBoardListDTO pagedBoardListDTO = null;
 
         try{
-            boardListDTOs = boardService.listUnreplied(noOfDisplay);
-            return ResponseEntity.ok().body(boardListDTOs);
+            int nPage = Integer.parseInt(page);
+            log.info("##### listUuReplied@BoardController page {}", nPage);
+            pagedBoardListDTO = boardService.listUnreplied(nPage);
+            return ResponseEntity.ok().body(pagedBoardListDTO);
         }catch(Exception e){
             log.error("##### listUnreplied@BoardController >> error in get list : {}", e.getMessage());
             return ResponseEntity.badRequest().body(null);
