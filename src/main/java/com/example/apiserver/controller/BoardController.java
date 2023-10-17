@@ -67,9 +67,10 @@ public class BoardController {
         }
     }
 
+
     @GetMapping(value = "/listUnReplied/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<PagedBoardListDTO> listUnreplied(@PathVariable(value = "page", required = false) String page){
+    public ResponseEntity<PagedBoardListDTO> listUnreplied(@PathVariable("page") String page){
         if(page == null) page= "0";
         PagedBoardListDTO pagedBoardListDTO = null;
 
