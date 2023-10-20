@@ -3,17 +3,17 @@ package com.example.apiserver.controller;
 import com.example.apiserver.dto.*;
 import com.example.apiserver.entity.BoardEntity;
 import com.example.apiserver.service.BoardService;
+import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.AuthenticatedPrincipal;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
+import java.nio.file.Files;
 import java.util.List;
 
 @Controller
@@ -84,4 +84,25 @@ public class BoardController {
             return ResponseEntity.badRequest().body(null);
         }
     }
+
+    @GetMapping(value="/download/{strId}")
+    @ResponseBody
+    public ResponseEntity<FileSystemResource> download(@PathVariable String strId){
+
+        //String resouceName = resource.getFilename();
+        HttpHeaders headers = new HttpHeaders();
+
+        try{
+            Long id = Long.parseLong(strId);
+            String filepath = boardService.getFilePath(id);
+            log.info("#### download@BoardController filepath : {}", filepath);
+            FileSystemResource resource = new FileSystemResource(filepath);
+            headers.add("Content-Type", Files.probeContentType(resource.getFile().toPath()));
+            return ResponseEntity.ok().headers(headers).body(resource);
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(null);
+        }
+
+    }
+
 }

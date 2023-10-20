@@ -113,4 +113,9 @@ public class BoardService {
         log.info("#### listUnreplied@BoardService boardListDTOS : {}", boardListDTOs);
         return pagedBoardListDTO;
     }
+
+    public String getFilePath(Long id) throws Exception {
+        BoardEntity boardEntity = boardRepository.findById(id).orElseThrow(()->new RuntimeException("id not found"));
+        return boardEntity.getFilePath();
+    }
 }
