@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Controller
@@ -85,21 +87,21 @@ public class BoardController {
         }
     }
 
-    @GetMapping(value="/download/{strId}")
+    @PostMapping(value="/download")
     @ResponseBody
-    public ResponseEntity<FileSystemResource> download(@PathVariable String strId){
+    public ResponseEntity<byte[]> download(@RequestParam Long id){
 
-        //String resouceName = resource.getFilename();
-        HttpHeaders headers = new HttpHeaders();
-
-        try{
-            Long id = Long.parseLong(strId);
+        try {
             String filepath = boardService.getFilePath(id);
-            log.info("#### download@BoardController filepath : {}", filepath);
-            FileSystemResource resource = new FileSystemResource(filepath);
-            headers.add("Content-Type", Files.probeContentType(resource.getFile().toPath()));
-            return ResponseEntity.ok().headers(headers).body(resource);
-        } catch (Exception e){
+            Path path = Paths.get(filepath);
+            byte[] fileContent = Files.readAllBytes(path);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Disposition", "attachment; filename=" + path.getFileName());
+            headers.add("Content-Type", Files.probeContentType(path));
+
+            return ResponseEntity.ok().headers(headers).body(fileContent);
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
         }
 
