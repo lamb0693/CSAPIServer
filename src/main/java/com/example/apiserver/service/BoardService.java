@@ -78,6 +78,7 @@ public class BoardService {
             boardListDTO = new BoardListDTO();
             boardListDTO.setBoard_id(boardEntity.getBoard_id());
             boardListDTO.setName(boardEntity.getUploader().getName());
+            boardListDTO.setTel(boardEntity.getUploader().getTel());
             boardListDTO.setBReplied(boardEntity.isBReplied());
             boardListDTO.setContent(boardEntity.getContent().toString());
             boardListDTO.setMessage(boardEntity.getMessage());
@@ -100,6 +101,7 @@ public class BoardService {
             boardListDTO = new BoardListDTO();
             boardListDTO.setBoard_id(boardEntity.getBoard_id());
             boardListDTO.setName(boardEntity.getUploader().getName());
+            boardListDTO.setName(boardEntity.getUploader().getTel());
             boardListDTO.setBReplied(boardEntity.isBReplied());
             boardListDTO.setContent(boardEntity.getContent().toString());
             boardListDTO.setMessage(boardEntity.getMessage());

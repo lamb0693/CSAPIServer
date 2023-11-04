@@ -16,6 +16,8 @@ public class BoardListDTO {
 
     private String name;
 
+    private String tel;
+
     private String content;
 
     private boolean bReplied;
@@ -29,6 +31,7 @@ public class BoardListDTO {
         return "BoardListDTO{" +
                 "board_id=" + board_id +
                 ", name='" + name + '\'' +
+                ", tel='" + tel + '\'' +
                 ", content='" + content + '\'' +
                 ", bReplied=" + bReplied +
                 ", message='" + message + '\'' +
