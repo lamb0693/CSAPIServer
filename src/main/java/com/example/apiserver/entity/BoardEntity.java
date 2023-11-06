@@ -36,7 +36,7 @@ public class BoardEntity {
     @Column(length = 100)
     String filePath;
 
-    @Column(length = 30)
+    @Column(length = 100)
     String origFilename;
 
     @Column(updatable = false)
