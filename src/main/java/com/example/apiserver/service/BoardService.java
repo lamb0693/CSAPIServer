@@ -98,10 +98,11 @@ public class BoardService {
         Page<BoardEntity> boardEntityList = boardRepository.findAllByBReplied(false, pageable);
         log.info("#### list@BoardService boardEntityList : {}", boardEntityList);
         for(BoardEntity boardEntity : boardEntityList){
+            if(boardEntity.getUploader().getRole().toString().equals("CSR")) continue;
             boardListDTO = new BoardListDTO();
             boardListDTO.setBoard_id(boardEntity.getBoard_id());
             boardListDTO.setName(boardEntity.getUploader().getName());
-            boardListDTO.setName(boardEntity.getUploader().getTel());
+            boardListDTO.setTel(boardEntity.getUploader().getTel());
             boardListDTO.setBReplied(boardEntity.isBReplied());
             boardListDTO.setContent(boardEntity.getContent().toString());
             boardListDTO.setMessage(boardEntity.getMessage());
