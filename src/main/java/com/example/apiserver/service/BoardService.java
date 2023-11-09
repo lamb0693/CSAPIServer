@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Path;
@@ -120,5 +121,18 @@ public class BoardService {
     public String getFilePath(Long id) throws Exception {
         BoardEntity boardEntity = boardRepository.findById(id).orElseThrow(()->new RuntimeException("id not found"));
         return boardEntity.getFilePath();
+    }
+
+    public void markReplied(@RequestParam  String customerTel) {
+        log.info("markReplied, strCustomerTel : {}", customerTel);
+        List<BoardEntity> boardEntityList = boardRepository.findByCustmorTel(customerTel);
+
+        // bReplied가 false인것은 모두 true로 변경
+        for(BoardEntity board : boardEntityList){
+            if(board.isBReplied()==true) continue;
+            board.setBReplied(true);
+            boardRepository.save(board);
+        }
+
     }
 }

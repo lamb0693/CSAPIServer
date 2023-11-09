@@ -87,6 +87,21 @@ public class BoardController {
         }
     }
 
+    @PostMapping(value="/markReply")
+    @ResponseBody
+    public ResponseEntity<String> markReplied(@RequestParam String customerTel){
+        String strCustomorTel = customerTel.replaceAll("\"", "");
+        log.info("markReplied customorTel : {}", strCustomorTel);
+
+        try{
+            boardService.markReplied(strCustomorTel) ;
+            return ResponseEntity.ok().body("success");
+        } catch(Exception e){
+            log.error("markReplied : {}", e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PostMapping(value="/download")
     @ResponseBody
     public ResponseEntity<byte[]> download(@RequestParam Long id){
@@ -102,6 +117,7 @@ public class BoardController {
 
             return ResponseEntity.ok().headers(headers).body(fileContent);
         } catch (Exception e) {
+            log.error("download : {}", e.getMessage());
             return ResponseEntity.badRequest().body(null);
         }
 

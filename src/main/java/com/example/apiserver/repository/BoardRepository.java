@@ -16,4 +16,7 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Long> {
 
     @Query(value = "select b from BoardEntity as b where (b.bReplied = false ) order by b.board_id desc")
     Page<BoardEntity> findAllByBReplied(boolean b, Pageable pageable);
+
+    @Query(value = "select b from BoardEntity as b where (b.customer.tel = :strCustomorTel )")
+    List<BoardEntity> findByCustmorTel(String strCustomorTel);
 }
