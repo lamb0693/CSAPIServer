@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -47,6 +48,7 @@ public class BoardService {
         boardEntity.setMessage(boardCreateDTO.getMessage());
         boardEntity.setUploader(memberEntity);
         boardEntity.setCustomer(customerEntity);
+        boardEntity.setBReplied(false);
         log.info("##### create@BoardService boardEntity {}", boardEntity);
 
         MultipartFile file = boardCreateDTO.getFile();
@@ -75,6 +77,9 @@ public class BoardService {
         Pageable pageable = PageRequest.of(0, noOfDisplay);
         List<BoardEntity> boardEntityList = boardRepository.list(tel, pageable);
         log.info("#### list@BoardService boardEntityList : {}", boardEntityList);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
         for(BoardEntity boardEntity : boardEntityList){
             boardListDTO = new BoardListDTO();
             boardListDTO.setBoard_id(boardEntity.getBoard_id());
@@ -83,7 +88,7 @@ public class BoardService {
             boardListDTO.setBReplied(boardEntity.isBReplied());
             boardListDTO.setContent(boardEntity.getContent().toString());
             boardListDTO.setMessage(boardEntity.getMessage());
-            boardListDTO.setStrUpdatedAt(boardEntity.getUpdate_date().toString());
+            boardListDTO.setStrUpdatedAt(boardEntity.getUpdate_date().format(formatter));
             boardListDTOs.add(boardListDTO);
         }
         log.info("#### list@BoardService boardListDTOS : {}", boardListDTOs);
@@ -98,6 +103,9 @@ public class BoardService {
         Pageable pageable = PageRequest.of(page, 10);
         Page<BoardEntity> boardEntityList = boardRepository.findAllByBReplied(false, pageable);
         log.info("#### list@BoardService boardEntityList : {}", boardEntityList);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
         for(BoardEntity boardEntity : boardEntityList){
             if(boardEntity.getUploader().getRole().toString().equals("CSR")) continue;
             boardListDTO = new BoardListDTO();
@@ -107,7 +115,7 @@ public class BoardService {
             boardListDTO.setBReplied(boardEntity.isBReplied());
             boardListDTO.setContent(boardEntity.getContent().toString());
             boardListDTO.setMessage(boardEntity.getMessage());
-            boardListDTO.setStrUpdatedAt(boardEntity.getUpdate_date().toString());
+            boardListDTO.setStrUpdatedAt(boardEntity.getUpdate_date().format(formatter));
             boardListDTOs.add(boardListDTO);
         }
         pagedBoardListDTO.setMemberListDTOList(boardListDTOs);

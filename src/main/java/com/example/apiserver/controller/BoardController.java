@@ -40,10 +40,10 @@ public class BoardController {
             log.info(file.getOriginalFilename());
             boardCreateDTO.setFile(file);
         }
-        log.info("##### create@BoardController boardCreateDTO {}", boardCreateDTO);
 
         try{
             boardCreateDTO.setTel(memberAuthDTO.getTel());
+            log.info("##### create@BoardController boardCreateDTO {}", boardCreateDTO);
             BoardEntity boardEntity = boardService.create(boardCreateDTO);
             boardEntity.setUploader(null);
             boardEntity.setCustomer(null);
