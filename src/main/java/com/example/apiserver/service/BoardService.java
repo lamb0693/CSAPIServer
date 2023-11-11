@@ -56,7 +56,7 @@ public class BoardService {
             String origFilename = file.getOriginalFilename();
             boardEntity.setOrigFilename( origFilename );
             String uuid = UUID.randomUUID().toString();
-            Path savedPath = Paths.get(uploadPath + "\\"+ uuid + "_" +  origFilename );
+            Path savedPath = Paths.get(uploadPath + "/"+ uuid + "_" +  origFilename );
             boardEntity.setFilePath(savedPath.toString());
             try{
                 file.transferTo(savedPath);

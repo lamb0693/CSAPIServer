@@ -18,19 +18,4 @@ public class CustomServletConfig implements WebMvcConfigurer {
 
     }
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-
-        registry.addMapping("/**")
-                .allowedHeaders("*")
-                .exposedHeaders("*")
-                .maxAge(3000)
-                .allowedMethods(
-                        HttpMethod.GET.name(),
-                        HttpMethod.HEAD.name(),
-                        HttpMethod.POST.name(),
-                        HttpMethod.PUT.name(),
-                        HttpMethod.DELETE.name()
-                );
-    }
 }
